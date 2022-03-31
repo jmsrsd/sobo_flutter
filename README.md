@@ -1,6 +1,6 @@
 # sobo_flutter
 
-Simple yet robust note-taking app made with flutter, rxdart, and hive.
+Simple yet robust & reactive note-taking app made with flutter, rxdart, and hive.
 
 ## Screenshot
 

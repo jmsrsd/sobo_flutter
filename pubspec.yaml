@@ -1,5 +1,5 @@
 name: sobo_flutter
-description: Simple yet robust note-taking app made with flutter, rxdart, and hive.
+description: Simple yet robust & reactive note-taking app made with flutter, rxdart, and hive.
 
 publish_to: "none"
 
