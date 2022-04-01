@@ -1,5 +1,5 @@
-import '../../common/data/query/data_query.dart';
-import '../../common/data/source/data_source.dart';
+import '../../query/data_query.dart';
+import '../../source/data_source.dart';
 import '../model/meta_data.dart';
 
 class MetaDataQuery extends DataQuery<MetaData> {
@@ -29,14 +29,14 @@ class MetaDataQuery extends DataQuery<MetaData> {
   Future<void> edit(String id, MetaData data) async {
     await source.collect().then((collected) async {
       final updated = DateTime.now().microsecondsSinceEpoch.toString();
-      data = (collected[id] ?? MetaData(created: updated)).copyWith(
+      final decoded = (collected[id] ?? MetaData(created: updated)).copyWith(
         id: id,
         table: table,
         updated: updated,
       );
 
       await source.connect().then((connection) async {
-        await connection.put(id, source.encode(data));
+        await connection.put(id, source.encode(decoded));
       });
     });
   }
@@ -47,12 +47,9 @@ class MetaDataQuery extends DataQuery<MetaData> {
       final entries = collected.entries;
 
       final result = entries.map((e) => e.value).toList();
-
-      if (result.isEmpty) return MetaData();
-
       result.sort((a, b) => a.updated.compareTo(b.updated));
 
-      return result.last;
+      return result.isEmpty ? MetaData() : result.last;
     });
   }
 

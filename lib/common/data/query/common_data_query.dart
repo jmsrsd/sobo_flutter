@@ -1,12 +1,11 @@
 import 'dart:developer';
 
-import '../../../meta/controller/meta_respository.dart';
-import '../../../meta/model/meta_data.dart';
+import '../meta/controller/meta_respository.dart';
 import '../source/data_source.dart';
 import 'data_query.dart';
 
-class DefaultDataQuery<T extends Object> extends DataQuery<T> {
-  DefaultDataQuery(
+class CommonDataQuery<T extends Object> extends DataQuery<T> {
+  CommonDataQuery(
     DataSource<T> source,
     String table,
   ) : super(source, table);
@@ -18,13 +17,13 @@ class DefaultDataQuery<T extends Object> extends DataQuery<T> {
 
   @override
   Future<T> read(String id) async {
-    if (await MetaRepository().readable(id) == false) {
-      throw Exception('$id is not readable');
+    if (await readable(id) == false) {
+      return null as T;
     }
 
-    final collected = await source.collect();
-    final result = collected[id];
-    return result!;
+    return await source.collect().then((collected) async {
+      return collected[id] as T;
+    });
   }
 
   @override
@@ -36,7 +35,7 @@ class DefaultDataQuery<T extends Object> extends DataQuery<T> {
         await connection.put(id, source.encode(data));
       });
     } catch (e) {
-      log('$DefaultDataQuery.edit: $e');
+      log('$CommonDataQuery' '.edit: $e');
     }
   }
 
@@ -51,12 +50,10 @@ class DefaultDataQuery<T extends Object> extends DataQuery<T> {
 
   @override
   Future<T> get latest async {
-    return await MetaRepository().browse(table).then((ids) async {
-      final metas = <MetaData>[];
-
-      for (final id in ids) {
-        metas.add(await MetaRepository().read(id));
-      }
+    return await browse().then((ids) async {
+      final metas = await Future.wait(
+        ids.map((id) => MetaRepository().read(id)).toList(),
+      );
 
       metas.sort((a, b) => a.updated.compareTo(b.updated));
 

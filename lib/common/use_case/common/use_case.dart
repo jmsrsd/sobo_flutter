@@ -1,14 +1,9 @@
-import '../../data/query/data_query.dart';
-import '../../model/view_model.dart';
+import '../../model/intent_model.dart';
 
 abstract class UseCase<T extends Object> {
-  final ViewModel<T> viewModel;
-  final DataQuery<T> query;
+  final IntentModel<T> intent;
 
-  UseCase({
-    required this.viewModel,
-    required this.query,
-  });
+  UseCase({required this.intent});
 
   void execute();
 }

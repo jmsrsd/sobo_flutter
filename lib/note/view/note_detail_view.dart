@@ -1,27 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../../common/model/model.dart';
+import '../../common/model/view_model.dart';
+import '../../common/view/reactive/reactive_builder.dart';
+import '../../common/view/reactive/reactive_view.dart';
+import '../../common/view/styled_view.dart';
 import '../controller/note_view_model.dart';
 import '../model/note_data.dart';
 
-class NoteDetailView extends StatelessWidget {
+class NoteDetailView extends ReactiveView<NoteData> {
   const NoteDetailView({Key? key}) : super(key: key);
 
-  NoteViewModel get viewModel {
-    return NoteViewModel();
-  }
-
-  bool get loading {
-    return viewModel.loading;
-  }
-
-  NoteData get data {
-    return viewModel.selected ?? NoteData();
-  }
-
-  set data(NoteData value) {
-    viewModel.selected = value;
-  }
+  @override
+  ViewModel<NoteData> get model => NoteViewModel();
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +19,27 @@ class NoteDetailView extends StatelessWidget {
       extendBody: true,
       appBar: AppBar(
         title: const Text('Sobo'),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 8.0),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    intent.deleting(selected.id).execute();
+                    intent.dispatch(() async => Navigator.pop(context));
+                  },
+                  icon: const Icon(Icons.delete),
+                ),
+              ].map((e) {
+                return Container(
+                  margin: const EdgeInsets.only(right: 8.0),
+                  child: e,
+                );
+              }).toList(),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: const BottomAppBar(
         shape: AutomaticNotchedShape(
@@ -41,80 +52,76 @@ class NoteDetailView extends StatelessWidget {
       ),
       body: Column(
         children: [
-          StreamBuilder<Model<NoteData>>(
-            stream: viewModel.stream,
-            initialData: viewModel..browsing().execute(),
-            builder: (context, _) {
+          ReactiveBuilder<NoteData>(
+            view: this,
+            init: () {},
+            builder: (context, intent, loading) {
               return LinearProgressIndicator(
                 value: loading ? null : 1,
               );
             },
           ),
           Expanded(
-              child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0).copyWith(
-              bottom: 32.0 + kToolbarHeight,
-            ),
-            child: Column(
-              children: [
-                Material(
-                  clipBehavior: Clip.antiAlias,
-                  borderRadius: BorderRadius.circular(8.0),
-                  color: Theme.of(context).focusColor,
-                  elevation: 2.0,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: ListTile(
-                      title: Text(
-                        'Title',
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                      subtitle: TextField(
-                        controller: TextEditingController(text: data.title),
-                        decoration: const InputDecoration(
-                          hintText: '...',
-                          border: InputBorder.none,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0).copyWith(
+                bottom: 32.0 + kToolbarHeight,
+              ),
+              child: Column(
+                children: [
+                  StyledView(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: ListTile(
+                        title: Text(
+                          'Title',
+                          style: Theme.of(context).textTheme.caption,
                         ),
-                        onChanged: (text) {
-                          data = data.copyWith(title: text);
-                          viewModel.editing(data.id, data).execute();
-                        },
-                        maxLines: null,
+                        subtitle: TextField(
+                          controller:
+                              TextEditingController(text: selected.title),
+                          decoration: const InputDecoration(
+                            hintText: '...',
+                            border: InputBorder.none,
+                          ),
+                          onChanged: (text) {
+                            selected = selected.copyWith(title: text);
+                            intent.editing(selected.id, selected).execute();
+                          },
+                          maxLines: null,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8.0),
-                Material(
-                  clipBehavior: Clip.antiAlias,
-                  borderRadius: BorderRadius.circular(8.0),
-                  color: Theme.of(context).focusColor,
-                  elevation: 2.0,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: ListTile(
-                      title: Text(
-                        'Content',
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                      subtitle: TextField(
-                        controller: TextEditingController(text: data.content),
-                        decoration: const InputDecoration(
-                          hintText: '...',
-                          border: InputBorder.none,
+                  const SizedBox(height: 8.0),
+                  StyledView(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: ListTile(
+                        title: Text(
+                          'Content',
+                          style: Theme.of(context).textTheme.caption,
                         ),
-                        onChanged: (text) {
-                          data = data.copyWith(content: text);
-                          viewModel.editing(data.id, data).execute();
-                        },
-                        maxLines: null,
+                        subtitle: TextField(
+                          controller: TextEditingController(
+                            text: selected.content,
+                          ),
+                          decoration: const InputDecoration(
+                            hintText: '...',
+                            border: InputBorder.none,
+                          ),
+                          onChanged: (text) {
+                            selected = selected.copyWith(content: text);
+                            intent.editing(selected.id, selected).execute();
+                          },
+                          maxLines: null,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          )),
+          ),
         ],
       ),
     );

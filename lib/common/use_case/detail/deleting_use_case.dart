@@ -1,21 +1,20 @@
-import '../../data/query/data_query.dart';
-import '../../model/view_model.dart';
+import '../../model/intent_model.dart';
+
 import '../common/use_case.dart';
 
 class DeletingUseCase<T extends Object> extends UseCase<T> {
   final String id;
 
   DeletingUseCase({
-    required ViewModel<T> viewModel,
-    required DataQuery<T> query,
+    required IntentModel<T> intent,
     required this.id,
-  }) : super(viewModel: viewModel, query: query);
+  }) : super(intent: intent);
 
   @override
   void execute() {
-    viewModel.dispatch(() async {
-      await query.delete(id);
-      viewModel.collection.remove(id);
+    intent.dispatch(() async {
+      await intent.model.query().delete(id);
+      intent.model.cache.remove(id);
     });
   }
 }

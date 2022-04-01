@@ -1,31 +1,24 @@
 import 'package:flutter/material.dart';
 
-import '../../common/model/model.dart';
+import '../../common/model/view_model.dart';
+import '../../common/view/reactive/reactive_builder.dart';
+import '../../common/view/reactive/reactive_view.dart';
 import '../controller/note_view_model.dart';
 import '../model/note_data.dart';
 import 'note_tile_view.dart';
 
-class NoteMainView extends StatelessWidget {
+class NoteMainView extends ReactiveView<NoteData> {
   const NoteMainView({Key? key}) : super(key: key);
 
-  NoteViewModel get viewModel {
-    return NoteViewModel();
-  }
-
-  bool get loading {
-    return viewModel.loading;
-  }
-
-  List<NoteData> get collection {
-    return viewModel.collection.values.toList().reversed.toList();
-  }
+  @override
+  ViewModel<NoteData> get model => NoteViewModel();
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Model<NoteData>>(
-      stream: viewModel.stream,
-      initialData: viewModel..browsing().execute(),
-      builder: (context, _) {
+    return ReactiveBuilder<NoteData>(
+      view: this,
+      init: intent.browsing().execute,
+      builder: (context, intent, loading) {
         return Scaffold(
           extendBody: true,
           appBar: AppBar(
@@ -48,18 +41,18 @@ class NoteMainView extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: RefreshIndicator(
-                    onRefresh: () async => viewModel.browsing().execute(),
+                    onRefresh: () async => intent.browsing().execute(),
                     child: ListView.separated(
                       padding: const EdgeInsets.all(16.0).copyWith(
                         bottom: 32.0 + kToolbarHeight + 32.0,
                       ),
-                      itemCount: viewModel.collection.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 8.0),
+                      itemCount: collection.length,
                       itemBuilder: (context, index) {
                         return NoteTileView(
                           data: collection.elementAt(index),
                         );
                       },
+                      separatorBuilder: (_, __) => const SizedBox(height: 8.0),
                     ),
                   ),
                 ),
@@ -71,7 +64,7 @@ class NoteMainView extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             onPressed: loading
                 ? null
-                : viewModel.adding((id) => NoteData(id: id)).execute,
+                : intent.adding((id) => NoteData(id: id)).execute,
             child: const Icon(Icons.add),
           ),
         );

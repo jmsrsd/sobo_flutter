@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import '../../common/data/query/common_data_query.dart';
 import '../../common/data/query/data_query.dart';
-import '../../common/data/query/default_data_query.dart';
 import '../../common/data/source/data_source.dart';
 import '../../common/singleton.dart';
 import '../model/note_data.dart';
@@ -16,7 +16,7 @@ class NoteRepository extends DataSource<NoteData> {
   }
 
   DataQuery<NoteData> query() {
-    return DefaultDataQuery<NoteData>(this, name);
+    return CommonDataQuery<NoteData>(this, name);
   }
 
   @override

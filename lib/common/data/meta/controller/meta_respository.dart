@@ -1,4 +1,4 @@
-import '../../common/singleton.dart';
+import '../../../singleton.dart';
 import '../model/meta_data.dart';
 import 'meta_data_query.dart';
 import 'meta_data_source.dart';
@@ -33,7 +33,7 @@ class MetaRepository extends MetaDataSource {
   }
 
   Future<void> edit(String id, String table) async {
-    await query(table).edit(id, MetaData(id: id));
+    await query(table).edit(id, MetaData());
   }
 
   Future<void> delete(String id) async {

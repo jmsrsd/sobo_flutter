@@ -1,24 +1,24 @@
-import '../../data/query/data_query.dart';
-import '../../model/view_model.dart';
+import '../../model/intent_model.dart';
+
+import '../../value/value_id.dart';
 import '../common/use_case.dart';
 
 class AddingUseCase<T extends Object> extends UseCase<T> {
-  final T Function(String id) factory;
+  final T Function(String id) create;
 
   AddingUseCase({
-    required ViewModel<T> viewModel,
-    required DataQuery<T> query,
-    required this.factory,
-  }) : super(viewModel: viewModel, query: query);
+    required IntentModel<T> intent,
+    required this.create,
+  }) : super(intent: intent);
 
   @override
   void execute() {
-    viewModel.dispatch(() async {
-      final id = DateTime.now().microsecondsSinceEpoch.toString();
-      final data = factory(id);
+    intent.dispatch(() async {
+      final id = ValueId.create().get();
+      final data = create(id);
 
-      await query.edit(id, data);
-      viewModel.collection[id] = data;
+      await intent.model.query().edit(id, data);
+      intent.model.cache[id] = data;
     });
   }
 }

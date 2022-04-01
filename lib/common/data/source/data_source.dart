@@ -14,9 +14,9 @@ abstract class DataSource<T extends Object> {
   }
 
   Future<Map<String, T>> collect() async {
-    return await connect().then((box) async {
-      return box.toMap().map((key, value) {
-        return MapEntry('$key', decode(value));
+    return await connect().then((connection) async {
+      return connection.toMap().map((id, encoded) {
+        return MapEntry('$id', decode(encoded));
       });
     });
   }

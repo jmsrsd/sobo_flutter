@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
+
+import '../../common/model/view_model.dart';
+import '../../common/view/reactive/reactive_view.dart';
+import '../../common/view/styled_view.dart';
 import '../controller/note_view_model.dart';
 import '../model/note_data.dart';
 import 'note_detail_view.dart';
 
-class NoteTileView extends StatelessWidget {
+class NoteTileView extends ReactiveView<NoteData> {
   final NoteData data;
 
   const NoteTileView({Key? key, required this.data}) : super(key: key);
 
-  NoteViewModel get viewModel {
-    return NoteViewModel();
-  }
+  @override
+  ViewModel<NoteData> get model => NoteViewModel();
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      clipBehavior: Clip.antiAlias,
-      borderRadius: BorderRadius.circular(8.0),
-      color: Theme.of(context).focusColor,
-      elevation: 2.0,
+    return StyledView(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: ListTile(
-              onTap: viewModel.reading(context, data.id, (context) {
+              onTap: intent.opening(context, data.id, (context) {
                 return const NoteDetailView();
               }).execute,
               minVerticalPadding: 16.0,
@@ -48,7 +47,7 @@ class NoteTileView extends StatelessWidget {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 12.0),
             child: IconButton(
-              onPressed: viewModel.deleting(data.id).execute,
+              onPressed: intent.deleting(data.id).execute,
               icon: const Icon(Icons.delete),
             ),
           ),

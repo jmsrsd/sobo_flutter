@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../common/data/source/data_source.dart';
+import '../../../data/source/data_source.dart';
 import '../model/meta_data.dart';
 
 abstract class MetaDataSource extends DataSource<MetaData> {

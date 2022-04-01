@@ -1,3 +1,5 @@
+import '../../common/model/intent_model.dart';
+
 import '../../common/data/query/data_query.dart';
 import '../../common/model/view_model.dart';
 import '../../common/singleton.dart';
@@ -9,10 +11,16 @@ class NoteViewModel extends ViewModel<NoteData> {
 
   factory NoteViewModel() {
     return Singleton<NoteViewModel>().get(() {
-      return NoteViewModel._()..browsing().execute();
+      final instance = NoteViewModel._();
+      IntentModel.of(instance).browsing().execute();
+
+      return instance;
     });
   }
 
   @override
-  DataQuery<NoteData> get query => NoteRepository().query();
+  DataQuery<NoteData> query() => NoteRepository().query();
+
+  @override
+  NoteData initialData() => NoteData();
 }

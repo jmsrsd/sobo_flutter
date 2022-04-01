@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../model/intent_model.dart' as lib;
 
-import '../../data/query/data_query.dart';
-import '../../model/view_model.dart';
 import '../common/use_case.dart';
 
 class OpeningUseCase<T extends Object> extends UseCase<T> {
@@ -10,16 +9,15 @@ class OpeningUseCase<T extends Object> extends UseCase<T> {
   final WidgetBuilder builder;
 
   OpeningUseCase({
-    required ViewModel<T> viewModel,
-    required DataQuery<T> query,
+    required lib.IntentModel<T> intent,
     required this.context,
     required this.id,
     required this.builder,
-  }) : super(viewModel: viewModel, query: query);
+  }) : super(intent: intent);
 
   @override
   void execute() {
-    viewModel.select(id);
-    viewModel.open(context, builder);
+    intent.model.select(id);
+    intent.open(context, builder);
   }
 }

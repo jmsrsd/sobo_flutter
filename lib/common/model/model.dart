@@ -5,16 +5,26 @@ import '../dispatcher.dart';
 abstract class Model<T extends Object> {
   final stream = BehaviorSubject<Model<T>>();
   final dispatcher = Dispatcher();
-  final collection = <String, T>{};
+  final cache = <String, T>{};
 
-  T? selected;
+  T? selectedOrNull;
+
+  T initialData();
+
+  T get selected {
+    return selectedOrNull ?? initialData();
+  }
+
+  set selected(T value) {
+    selectedOrNull = value;
+  }
 
   bool get loading {
     return dispatcher.dispatching;
   }
 
   void select(String id) {
-    dispatch(() async => selected = collection[id]);
+    dispatch(() async => selectedOrNull = cache[id]);
   }
 
   void dispatch(Future<void> Function() action) {
