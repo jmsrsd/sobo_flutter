@@ -1,36 +1,43 @@
 import 'package:rxdart/rxdart.dart';
+import 'package:sobo_flutter/common/data/meta/controller/meta_respository.dart';
 
 import '../dispatcher.dart';
+import '../reactor.dart';
+import '../value/value_data.dart';
 
-abstract class Model<T extends Object> {
+abstract class Model<T extends Object> implements Reactor {
   final stream = BehaviorSubject<Model<T>>();
   final dispatcher = Dispatcher();
   final cache = <String, T>{};
+  final ValueData<T> selected;
 
-  T? selectedOrNull;
-
-  T initialData();
-
-  T get selected {
-    return selectedOrNull ?? initialData();
-  }
-
-  set selected(T value) {
-    selectedOrNull = value;
-  }
+  Model(this.selected);
 
   bool get loading {
     return dispatcher.dispatching;
   }
 
-  void select(String id) {
-    dispatch(() async => selectedOrNull = cache[id]);
-  }
-
   void dispatch(Future<void> Function() action) {
     dispatcher.dispatch(
       action: action,
-      refresh: () async => stream.add(this),
+      reactor: this,
     );
   }
+
+  void select(String? id) {
+    dispatch(() async {
+      var readable = false;
+
+      try {
+        readable = await MetaRepository().query().readable(id!);
+      } catch (e) {
+        readable = false;
+      }
+
+      selected.data = readable ? cache[id] : null;
+    });
+  }
+
+  @override
+  void refresh() => stream.add(this);
 }

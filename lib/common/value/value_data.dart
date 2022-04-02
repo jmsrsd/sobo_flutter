@@ -1,11 +1,11 @@
-class ValueData<T> {
-  final T Function() create;
+class ValueData<T extends Object> {
+  final T Function() generate;
 
-  T? value;
+  T? dataOrNull;
 
-  ValueData.from(this.create);
+  ValueData.create(this.generate);
 
-  T get() => value ??= create();
+  T get data => dataOrNull ??= generate();
 
-  void set(T value) => this.value = value;
+  set data(T? value) => dataOrNull = value;
 }

@@ -1,16 +1,14 @@
 class ValueId {
-  String? value;
+  String? idOrNull;
 
-  ValueId._(this.value);
+  ValueId._(this.idOrNull);
 
   factory ValueId.create() {
     return ValueId._(DateTime.now().microsecondsSinceEpoch.toString());
   }
 
   factory ValueId.parse(int value) {
-    if (value < 0) {
-      return null as ValueId;
-    }
+    if (value < 0) return null as ValueId;
 
     return ValueId._(value.toString());
   }
@@ -19,6 +17,7 @@ class ValueId {
     return ValueId.parse(int.parse(value));
   }
 
-  String get() => value ?? '';
-  void set(String value) => this.value = value;
+  String get() => idOrNull ?? '';
+
+  void set(String value) => idOrNull = value;
 }

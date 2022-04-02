@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'view_model.dart';
-import '../use_case/common/use_case.dart';
-import '../use_case/detail/adding_use_case.dart';
-import '../use_case/detail/browsing_use_case.dart';
-import '../use_case/detail/deleting_use_case.dart';
-import '../use_case/detail/editing_use_case.dart';
-import '../use_case/detail/opening_use_case.dart';
-import '../use_case/detail/reading_use_case.dart';
+import 'model/view_model.dart';
+import 'use_case/common/use_case.dart';
+import 'use_case/detail/adding_use_case.dart';
+import 'use_case/detail/browsing_use_case.dart';
+import 'use_case/detail/deleting_use_case.dart';
+import 'use_case/detail/editing_use_case.dart';
+import 'use_case/detail/opening_use_case.dart';
+import 'use_case/detail/reading_use_case.dart';
 
-class IntentModel<T extends Object> {
+class Intention<T extends Object> {
   final ViewModel<T> model;
 
-  IntentModel.of(this.model);
+  Intention.of(this.model);
 
   void dispatch(Future<void> Function() action) {
     model.dispatch(action);

@@ -4,6 +4,8 @@ import 'dart:developer';
 
 import 'package:rxdart/rxdart.dart';
 
+import 'reactor.dart';
+
 class Dispatcher {
   Dispatcher._();
 
@@ -30,17 +32,17 @@ class Dispatcher {
 
   void dispatch({
     required Future<void> Function() action,
-    required Future<void> Function() refresh,
+    required Reactor reactor,
   }) {
     stream.add(() async {
       queue.addLast(action);
-      await refresh();
+      reactor.refresh();
 
       await queue.first();
-      await refresh();
+      reactor.refresh();
 
       queue.removeFirst();
-      await refresh();
+      reactor.refresh();
     });
   }
 }

@@ -1,10 +1,10 @@
-import '../../model/intent_model.dart';
+import '../../intention.dart';
 
 import '../common/use_case.dart';
 
 class BrowsingUseCase<T extends Object> extends UseCase<T> {
   BrowsingUseCase({
-    required IntentModel<T> intent,
+    required Intention<T> intent,
   }) : super(intent: intent);
 
   @override

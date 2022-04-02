@@ -4,15 +4,15 @@ import '../meta/controller/meta_respository.dart';
 import '../source/data_source.dart';
 import 'data_query.dart';
 
-class CommonDataQuery<T extends Object> extends DataQuery<T> {
-  CommonDataQuery(
+class CommonQuery<T extends Object> extends DataQuery<T> {
+  CommonQuery(
     DataSource<T> source,
     String table,
   ) : super(source, table);
 
   @override
   Future<List<String>> browse() async {
-    return MetaRepository().browse(table);
+    return MetaRepository().query().browse(table);
   }
 
   @override
@@ -29,19 +29,19 @@ class CommonDataQuery<T extends Object> extends DataQuery<T> {
   @override
   Future<void> edit(String id, T data) async {
     try {
-      await MetaRepository().edit(id, table);
+      await MetaRepository().query().edit(id, table);
 
       await source.connect().then((connection) async {
         await connection.put(id, source.encode(data));
       });
     } catch (e) {
-      log('$CommonDataQuery' '.edit: $e');
+      log('$CommonQuery' '.edit: $e');
     }
   }
 
   @override
   Future<void> delete(String id) async {
-    await MetaRepository().delete(id);
+    await MetaRepository().query().delete(id);
 
     await source.connect().then((connection) async {
       await connection.delete(id);
@@ -52,7 +52,7 @@ class CommonDataQuery<T extends Object> extends DataQuery<T> {
   Future<T> get latest async {
     return await browse().then((ids) async {
       final metas = await Future.wait(
-        ids.map((id) => MetaRepository().read(id)).toList(),
+        ids.map((id) => MetaRepository().query().read(id)).toList(),
       );
 
       metas.sort((a, b) => a.updated.compareTo(b.updated));
@@ -63,6 +63,6 @@ class CommonDataQuery<T extends Object> extends DataQuery<T> {
 
   @override
   Future<bool> readable(String id) async {
-    return await MetaRepository().readable(id);
+    return await MetaRepository().query().readable(id);
   }
 }

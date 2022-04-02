@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../model/intent_model.dart';
+import '../../intention.dart';
 import '../../model/model.dart';
 import 'reactive_view.dart';
 
@@ -9,7 +9,7 @@ class ReactiveBuilder<T extends Object> extends StatelessWidget {
   final void Function() init;
   final Widget Function(
     BuildContext context,
-    IntentModel<T> intent,
+    Intention<T> intent,
     bool loading,
   ) builder;
 

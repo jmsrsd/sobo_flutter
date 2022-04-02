@@ -1,7 +1,7 @@
-import '../../model/intent_model.dart';
+import '../../intention.dart';
 
 abstract class UseCase<T extends Object> {
-  final IntentModel<T> intent;
+  final Intention<T> intent;
 
   UseCase({required this.intent});
 

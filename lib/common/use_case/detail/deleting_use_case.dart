@@ -1,4 +1,4 @@
-import '../../model/intent_model.dart';
+import '../../intention.dart';
 
 import '../common/use_case.dart';
 
@@ -6,7 +6,7 @@ class DeletingUseCase<T extends Object> extends UseCase<T> {
   final String id;
 
   DeletingUseCase({
-    required IntentModel<T> intent,
+    required Intention<T> intent,
     required this.id,
   }) : super(intent: intent);
 

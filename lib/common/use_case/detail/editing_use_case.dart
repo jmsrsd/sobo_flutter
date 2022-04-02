@@ -1,4 +1,4 @@
-import '../../model/intent_model.dart';
+import '../../intention.dart';
 
 import '../common/use_case.dart';
 
@@ -7,7 +7,7 @@ class EditingUseCase<T extends Object> extends UseCase<T> {
   final T data;
 
   EditingUseCase({
-    required IntentModel<T> intent,
+    required Intention<T> intent,
     required this.id,
     required this.data,
   }) : super(intent: intent);

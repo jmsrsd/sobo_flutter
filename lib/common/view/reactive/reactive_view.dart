@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../model/intent_model.dart';
+import '../../intention.dart';
 import '../../model/view_model.dart';
 
 abstract class ReactiveView<T extends Object> extends StatelessWidget {
@@ -8,16 +8,20 @@ abstract class ReactiveView<T extends Object> extends StatelessWidget {
 
   ViewModel<T> get model;
 
-  IntentModel<T> get intent {
-    return IntentModel<T>.of(model);
+  Intention<T> get intent {
+    return Intention<T>.of(model);
+  }
+
+  T? get selectedOrNull {
+    return model.selected.dataOrNull;
   }
 
   T get selected {
-    return model.selected;
+    return model.selected.data;
   }
 
-  set selected(T value) {
-    model.selected = value;
+  set selected(T? value) {
+    model.selected.data = value;
   }
 
   List<T> get collection {
