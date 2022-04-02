@@ -4,8 +4,8 @@ import '../meta/controller/meta_respository.dart';
 import '../source/data_source.dart';
 import 'data_query.dart';
 
-class CommonQuery<T extends Object> extends DataQuery<T> {
-  CommonQuery(
+class LocalQuery<T extends Object> extends DataQuery<T> {
+  LocalQuery(
     DataSource<T> source,
     String table,
   ) : super(source, table);
@@ -35,7 +35,7 @@ class CommonQuery<T extends Object> extends DataQuery<T> {
         await connection.put(id, source.encode(data));
       });
     } catch (e) {
-      log('$CommonQuery' '.edit: $e');
+      log('$LocalQuery' '.edit: $e');
     }
   }
 
